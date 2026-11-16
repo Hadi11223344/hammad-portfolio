@@ -71,7 +71,7 @@ host at this directory, not the parent `Final-portfolio` folder.
 
 Build command: `npm run build`. Output: `dist`.
 
-The canonical and social URLs are `https://hammad-portfolio.vercel.app`. If the
+The canonical and social URLs are `https://hammad-portfolio-cyan-pi.vercel.app`. If the
 production domain is different, update `src/config/site.ts`, `index.html`,
 `public/robots.txt`, and `public/sitemap.xml` together.
 

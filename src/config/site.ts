@@ -4,7 +4,7 @@ export const siteConfig = {
   description:
     "CS graduate building FastAPI backends and LLM-powered product features. Open to ASE / Backend / Applied AI roles in Lahore.",
   /** Update after deploy — used for absolute OG/Twitter URLs */
-  url: "https://hammad-portfolio.vercel.app",
+  url: "https://hammad-portfolio-cyan-pi.vercel.app",
   author: "Hammad Tahir",
   keywords: [
     "Hammad Tahir",

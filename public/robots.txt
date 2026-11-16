@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://hammad-portfolio.vercel.app/sitemap.xml
+Sitemap: https://hammad-portfolio-cyan-pi.vercel.app/sitemap.xml
