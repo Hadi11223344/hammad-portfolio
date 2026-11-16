@@ -1,163 +1,110 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Github, Linkedin, Mail, ExternalLink } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import heroImage from "@/assets/hero-bg.jpg";
+import { personalInfo } from "@/config/content";
+import { siteConfig } from "@/config/site";
+import { scrollToId, usePrefersReducedMotion } from "@/lib/motion";
+import portrait from "@/assets/portrait.jpg";
 
 export function Hero() {
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollToProjects = () => {
-    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const reduced = usePrefersReducedMotion();
 
   return (
-    <section 
-      id="hero" 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(${heroImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
-    >
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="max-w-4xl mx-auto text-center space-y-8"
-        >
-          {/* Main heading */}
-          <div className="space-y-4">
-            <motion.h1 
-              className="font-heading font-bold text-5xl md:text-7xl lg:text-8xl text-white leading-tight"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              Alex Alex
-            </motion.h1>
-            
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-xl md:text-2xl lg:text-3xl text-white/90 font-medium"
-            >
-              Backend & AI Engineer — Java Spring Boot • Python FastAPI/Django • Agentic AI
-            </motion.h2>
-          </div>
+    <section id="hero" className="relative min-h-[100svh] overflow-hidden bg-background">
+      <motion.div
+        initial={reduced ? false : { scale: 1.04, opacity: 0.9 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: reduced ? 0 : 1.2, ease: [0.22, 1, 0.36, 1] }}
+        className="relative h-[52svh] min-h-[17rem] w-full overflow-hidden lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[46vw] xl:w-[48vw] 2xl:w-[50vw]"
+      >
+        <img
+          src={portrait}
+          alt={`Portrait of ${personalInfo.name}, Backend and Applied AI Engineer`}
+          className="h-full w-full object-cover object-[50%_28%] lg:object-[42%_18%]"
+          fetchPriority="high"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background via-background/40 to-transparent lg:hidden"
+        />
+        <div aria-hidden className="hero-portrait-mask absolute inset-0 hidden lg:block" />
+      </motion.div>
 
-          {/* Subtext */}
+      <div className="relative z-10 mx-auto flex min-h-0 max-w-7xl flex-col justify-center px-6 pb-16 pt-10 sm:px-10 lg:min-h-[100svh] lg:px-12 lg:pb-24 lg:pt-24">
+        <div className="hero-read-wash relative max-w-xl rounded-sm lg:max-w-[28rem] xl:max-w-xl">
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
+            initial={reduced ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.8 }}
-            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed"
+            transition={{ duration: reduced ? 0 : 0.5 }}
+            className="mb-4 text-xs font-medium uppercase tracking-[0.28em] text-muted-foreground"
           >
-            I build pragmatic, production-ready backends and AI features. 1+ year experience 
-            shipping APIs, real-time features, and ML-powered user experiences.
+            {personalInfo.title}
           </motion.p>
 
-          {/* Action buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
+          <motion.h1
+            initial={reduced ? false : { opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            transition={{ duration: reduced ? 0 : 0.65, delay: reduced ? 0 : 0.06 }}
+            className="font-heading text-[clamp(3rem,9vw,6.5rem)] font-extrabold leading-[0.9] tracking-tight text-foreground"
           >
-            <Button
-              size="lg"
-              onClick={scrollToContact}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-8 py-4 text-lg"
-            >
-              Hire Me
-              <ArrowRight className="ml-2 h-5 w-5" />
+            {personalInfo.name}
+          </motion.h1>
+
+          <motion.div
+            initial={reduced ? false : { scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{
+              duration: reduced ? 0 : 0.7,
+              delay: reduced ? 0 : 0.28,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="section-rule mt-6 origin-left"
+          />
+
+          <motion.p
+            initial={reduced ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduced ? 0 : 0.55, delay: reduced ? 0 : 0.22 }}
+            className="mt-6 max-w-md text-lg leading-relaxed tracking-tight text-foreground/80 sm:text-xl"
+          >
+            {personalInfo.tagline}.
+          </motion.p>
+
+          <motion.div
+            initial={reduced ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduced ? 0 : 0.55, delay: reduced ? 0 : 0.34 }}
+            className="mt-10 flex flex-wrap gap-3"
+          >
+            <Button size="lg" asChild className="icon-nudge h-12 rounded-md px-8 text-base tracking-tight shadow-sm">
+              <Link to="/projects">
+                Explore projects
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
-            
             <Button
               size="lg"
               variant="outline"
-              onClick={scrollToProjects}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm font-medium px-8 py-4 text-lg"
+              asChild
+              className="icon-nudge glass-soft h-12 rounded-md border-foreground/20 px-8 text-base tracking-tight"
             >
-              View Projects
-              <ExternalLink className="ml-2 h-5 w-5" />
-            </Button>
-          </motion.div>
-
-          {/* Status badges */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.8 }}
-            className="flex flex-wrap gap-3 justify-center items-center"
-          >
-            {["Available for Internships", "Open to Remote", "Based in Pakistan"].map((badge) => (
-              <Badge
-                key={badge}
-                variant="secondary"
-                className="bg-white/10 text-white border-white/20 backdrop-blur-sm px-4 py-2 text-sm font-medium"
-              >
-                {badge}
-              </Badge>
-            ))}
-          </motion.div>
-
-          {/* Social links */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.8 }}
-            className="flex gap-6 justify-center items-center"
-          >
-            <Button variant="ghost" size="lg" asChild className="text-white hover:bg-white/10 p-3">
-              <a href="https://www.linkedin.com/in/hammad-tahir1" target="_blank" rel="noopener noreferrer">
-                <Linkedin className="h-6 w-6" />
-                <span className="sr-only">LinkedIn</span>
+              <a href={siteConfig.resume.url} target="_blank" rel="noopener noreferrer">
+                <Download className="mr-2 h-4 w-4" />
+                Download CV
               </a>
             </Button>
-            
-            <Button variant="ghost" size="lg" asChild className="text-white hover:bg-white/10 p-3">
-              <a href="https://github.com/your-github" target="_blank" rel="noopener noreferrer">
-                <Github className="h-6 w-6" />
-                <span className="sr-only">GitHub</span>
-              </a>
-            </Button>
-            
-            <Button variant="ghost" size="lg" asChild className="text-white hover:bg-white/10 p-3">
-              <a href="mailto:XXX@protonmail.com">
-                <Mail className="h-6 w-6" />
-                <span className="sr-only">Email</span>
-              </a>
+            <Button
+              size="lg"
+              variant="ghost"
+              onClick={() => scrollToId("contact")}
+              className="h-12 rounded-md px-6 text-base tracking-tight text-muted-foreground hover:text-foreground"
+            >
+              Get in touch
             </Button>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center"
-        >
-          <motion.div
-            animate={{ y: [0, 16, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-1 h-3 bg-white/50 rounded-full mt-2"
-          />
-        </motion.div>
-      </motion.div>
     </section>
   );
 }

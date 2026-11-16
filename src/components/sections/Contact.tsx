@@ -1,267 +1,259 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Copy, ExternalLink } from "lucide-react";
+import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { siteConfig } from "@/config/site";
+import { useMotionVariants } from "@/lib/motion";
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { fade, stagger } = useMotionVariants();
 
   const contactInfo = [
     {
       icon: Mail,
       label: "Email",
-      value: "XXX@protonmail.com",
-      action: "mailto:XXX@protonmail.com",
-      copyValue: "XXX@protonmail.com"
+      value: siteConfig.contact.email,
+      action: `mailto:${siteConfig.contact.email}`,
+      copyValue: siteConfig.contact.email,
     },
     {
       icon: Phone,
       label: "Phone",
-      value: "0333333333",
-      action: "tel:+923333333333",
-      copyValue: "0333333333"
+      value: siteConfig.contact.phone,
+      action: "tel:+923005008369",
+      copyValue: "+923005008369",
     },
     {
       icon: MapPin,
       label: "Location",
-      value: "Pakistan",
-      action: null,
-      copyValue: "Pakistan"
-    }
+      value: siteConfig.contact.location,
+      action: null as string | null,
+      copyValue: siteConfig.contact.location,
+    },
+    {
+      icon: ExternalLink,
+      label: "LinkedIn",
+      value: "linkedin.com/in/hammad-tahir1",
+      action: siteConfig.social.linkedin,
+      copyValue: siteConfig.social.linkedin,
+    },
+    {
+      icon: ExternalLink,
+      label: "GitHub",
+      value: "github.com/hadi11223344",
+      action: siteConfig.social.github,
+      copyValue: siteConfig.social.github,
+    },
   ];
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const subject = String(data.get("subject") || "ASE / Backend opportunity").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (!name || !email || !message) {
       toast({
-        title: "Message sent!",
-        description: "Thank you for your message. I'll get back to you soon.",
+        title: "Missing fields",
+        description: "Please fill in name, email, and message.",
+        variant: "destructive",
       });
-    }, 2000);
+      return;
+    }
+
+    setIsSubmitting(true);
+    const body = [`Hi Hammad,`, ``, message, ``, `— ${name}`, `Reply-to: ${email}`].join(
+      "\n"
+    );
+    window.location.href = `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+    toast({
+      title: "Opening your email app",
+      description: `If nothing opens, email ${siteConfig.contact.email} directly.`,
+    });
+    setTimeout(() => setIsSubmitting(false), 800);
   };
 
-  const copyToClipboard = (value: string, label: string) => {
-    navigator.clipboard.writeText(value);
-    toast({
-      title: "Copied!",
-      description: `${label} copied to clipboard.`,
-    });
+  const copyToClipboard = async (value: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      toast({ title: "Copied", description: `${label} copied to clipboard.` });
+    } catch {
+      toast({ title: "Copy failed", description: value, variant: "destructive" });
+    }
   };
 
   return (
-    <section id="contact" className="py-24">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="max-w-6xl mx-auto"
-        >
-          {/* Section Header */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+    <section id="contact" className="section-pad bg-background">
+      <div className="mx-auto max-w-7xl px-6 sm:px-10">
+        <SectionHeader
+          eyebrow="Contact"
+          title="Get in touch"
+          lead="Open to ASE / Backend / Applied AI roles in Lahore. Happy to walk through VOIA, SmartCare, or HireBeam."
+        />
+
+        <div className="mt-16 grid gap-14 lg:grid-cols-2 lg:gap-20">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-40px" }}
+            className="space-y-0"
           >
-            <h2 className="font-heading font-bold text-4xl md:text-5xl mb-6">
-              Let's Work Together
-            </h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-8" />
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Ready to bring your next project to life? I'm available for internships and exciting opportunities.
+            {contactInfo.map((item) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.label}
+                  variants={fade}
+                  className="group flex items-center justify-between gap-3 border-b border-border/80 py-4 transition-colors duration-300 first:border-t first:border-border/80 hover:bg-muted/40"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <div className="min-w-0">
+                      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                        {item.label}
+                      </p>
+                      <p className="truncate text-sm font-medium tracking-tight text-foreground">
+                        {item.value}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 gap-0.5 opacity-70 transition-opacity group-hover:opacity-100">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      type="button"
+                      className="h-8 w-8 p-0"
+                      onClick={() => copyToClipboard(item.copyValue, item.label)}
+                      aria-label={`Copy ${item.label}`}
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                    </Button>
+                    {item.action && (
+                      <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
+                        <a
+                          href={item.action}
+                          target={item.action.startsWith("http") ? "_blank" : undefined}
+                          rel={
+                            item.action.startsWith("http") ? "noopener noreferrer" : undefined
+                          }
+                          aria-label={`Open ${item.label}`}
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+
+            <p className="pt-6 text-sm text-muted-foreground">
+              Prefer chat?{" "}
+              <a
+                href={siteConfig.social.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-underline text-foreground"
+              >
+                WhatsApp
+              </a>
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Information */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="space-y-8"
-            >
+          <motion.form
+            variants={fade}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-40px" }}
+            onSubmit={handleSubmit}
+            className="glass glass-lift space-y-5 rounded-md p-6 sm:p-8"
+          >
+            <div>
+              <h3 className="font-heading text-lg font-semibold tracking-tight">Send a note</h3>
+              <p className="mt-1.5 text-sm text-foreground/80">
+                Opens your email app with a draft to {siteConfig.contact.email}.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <h3 className="font-heading font-semibold text-2xl mb-6">
-                  Get In Touch
-                </h3>
-                <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-                  I'm always interested in discussing new opportunities, especially in backend development, 
-                  AI/ML projects, and innovative tech solutions. Feel free to reach out!
-                </p>
+                <label htmlFor="name" className="mb-2 block text-sm font-medium">
+                  Name
+                </label>
+                <Input
+                  id="name"
+                  name="name"
+                  required
+                  autoComplete="name"
+                  className="rounded-md bg-background/80"
+                />
               </div>
-
-              {/* Contact Cards */}
-              <div className="space-y-4">
-                {contactInfo.map((item, index) => {
-                  const IconComponent = item.icon;
-                  
-                  return (
-                    <motion.div
-                      key={item.label}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.1 * index }}
-                    >
-                      <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group">
-                        <CardContent className="p-6">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                              <div className="p-2 bg-primary/10 rounded-lg">
-                                <IconComponent className="w-5 h-5 text-primary" />
-                              </div>
-                              <div>
-                                <p className="font-medium text-foreground">{item.label}</p>
-                                <p className="text-muted-foreground">{item.value}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => copyToClipboard(item.copyValue, item.label)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity"
-                              >
-                                <Copy className="w-4 h-4" />
-                              </Button>
-                              
-                              {item.action && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  asChild
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                >
-                                  <a href={item.action}>
-                                    <ExternalLink className="w-4 h-4" />
-                                  </a>
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  );
-                })}
+              <div>
+                <label htmlFor="email" className="mb-2 block text-sm font-medium">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  className="rounded-md bg-background/80"
+                />
               </div>
-
-              {/* WhatsApp Button */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <Button
-                  size="lg"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                  asChild
-                >
-                  <a href="https://wa.me/923333333333" target="_blank" rel="noopener noreferrer">
-                    <Phone className="w-5 h-5 mr-2" />
-                    WhatsApp
-                  </a>
-                </Button>
-              </motion.div>
-            </motion.div>
-
-            {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+            </div>
+            <div>
+              <label htmlFor="subject" className="mb-2 block text-sm font-medium">
+                Subject
+              </label>
+              <Input
+                id="subject"
+                name="subject"
+                placeholder="ASE / Backend role at …"
+                className="rounded-md bg-background/80"
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="mb-2 block text-sm font-medium">
+                Message
+              </label>
+              <Textarea
+                id="message"
+                name="message"
+                required
+                rows={5}
+                placeholder="Brief note about the role…"
+                className="resize-none rounded-md bg-background/80"
+              />
+            </div>
+            <Button
+              type="submit"
+              size="lg"
+              className="icon-nudge w-full rounded-md"
+              disabled={isSubmitting}
             >
-              <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-                <CardContent className="p-8">
-                  <h3 className="font-heading font-semibold text-2xl mb-6">
-                    Send a Message
-                  </h3>
-                  
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="name" className="block text-sm font-medium mb-2">
-                          Name
-                        </label>
-                        <Input
-                          id="name"
-                          type="text"
-                          placeholder="Your Name"
-                          required
-                          className="bg-background/50"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label htmlFor="email" className="block text-sm font-medium mb-2">
-                          Email
-                        </label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="your@email.com"
-                          required
-                          className="bg-background/50"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                        Subject
-                      </label>
-                      <Input
-                        id="subject"
-                        type="text"
-                        placeholder="Project Discussion"
-                        className="bg-background/50"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="message" className="block text-sm font-medium mb-2">
-                        Message
-                      </label>
-                      <Textarea
-                        id="message"
-                        placeholder="Tell me about your project..."
-                        rows={6}
-                        required
-                        className="bg-background/50 resize-none"
-                      />
-                    </div>
-                    
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="w-full"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        "Sending..."
-                      ) : (
-                        <>
-                          <Send className="w-5 h-5 mr-2" />
-                          Send Message
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-        </motion.div>
+              {isSubmitting ? (
+                "Opening email…"
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Open email draft
+                </>
+              )}
+            </Button>
+          </motion.form>
+        </div>
       </div>
     </section>
   );

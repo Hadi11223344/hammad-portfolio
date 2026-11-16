@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -19,9 +20,10 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'heading': ['Space Grotesk', 'sans-serif'],
-				'body': ['Inter', 'sans-serif'],
-				'sans': ['Inter', 'sans-serif'],
+				'heading': ['"Bricolage Grotesque"', 'sans-serif'],
+				'display': ['"Bricolage Grotesque"', 'sans-serif'],
+				'body': ['"Source Sans 3"', 'sans-serif'],
+				'sans': ['"Source Sans 3"', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -148,5 +150,5 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [animate],
 } satisfies Config;

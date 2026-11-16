@@ -1,117 +1,103 @@
 import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SectionHeader } from "@/components/SectionHeader";
+import { skills } from "@/config/content";
+import { useMotionVariants, viewportOnce } from "@/lib/motion";
 
-const skills = {
-  "Backend": {
-    items: ["Java", "Spring Boot", "Python", "FastAPI", "Django", "Node.js", "REST APIs", "GraphQL", "Microservices", "WebSockets"],
-    color: "emerald"
-  },
-  "AI/ML": {
-    items: ["TensorFlow", "PyTorch", "scikit-learn", "Pandas", "NumPy", "OpenAI API", "Embeddings", "RAG", "Clustering", "Neural Networks"],
-    color: "sky"
-  },
-  "Databases": {
-    items: ["PostgreSQL", "MySQL", "Redis", "MongoDB", "Firebase", "Supabase"],
-    color: "violet"
-  },
-  "DevOps": {
-    items: ["Docker", "AWS", "GCP", "Vercel", "CI/CD", "Linux", "Nginx", "Git"],
-    color: "orange"
-  },
-  "Frontend": {
-    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML5", "CSS3"],
-    color: "blue"
-  },
-  "Mobile": {
-    items: ["Flutter", "Dart", "Firebase", "SQLite", "Provider", "Riverpod"],
-    color: "pink"
-  }
-};
-
-const colorMap: Record<string, string> = {
-  emerald: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-  sky: "bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300",
-  violet: "bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-300",
-  orange: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
-  blue: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-  pink: "bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300"
+const tierOrder = ["core", "applied", "also"] as const;
+const tierLabel: Record<(typeof tierOrder)[number], string> = {
+  core: "Core",
+  applied: "Applied",
+  also: "Also used",
 };
 
 export function Skills() {
-  return (
-    <section id="skills" className="py-24">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="max-w-6xl mx-auto"
-        >
-          {/* Section Header */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-heading font-bold text-4xl md:text-5xl mb-6">
-              Skills & Technologies
-            </h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-8" />
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Technologies and tools I use to build scalable, performant applications
-            </p>
-          </motion.div>
+  const entries = Object.entries(skills);
+  const { fade, stagger } = useMotionVariants();
 
-          {/* Skills Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(skills).map(([category, data], index) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              >
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="font-heading text-xl flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full bg-${data.color}-500`} />
-                      {category}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {data.items.map((skill) => (
-                        <Badge
-                          key={skill}
-                          variant="secondary"
-                          className={`${colorMap[data.color]} border-0 font-medium`}
-                        >
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+  const grouped = tierOrder.map((tier) => ({
+    tier,
+    items: entries.filter(([, data]) => data.tier === tier),
+  }));
+
+  return (
+    <section id="skills" className="section-pad border-y border-border/70 bg-card/30">
+      <div className="mx-auto max-w-7xl px-6 sm:px-10">
+        <div className="lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)] lg:gap-16 xl:gap-24">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <SectionHeader
+              eyebrow="Skills"
+              title="Stack by how I use it"
+              lead="Core delivery tools first, then applied ML/DL/CV, then supporting frontend."
+              className="[&_h2]:font-extrabold"
+            />
           </div>
 
-          {/* Proficiency Note */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-center mt-12"
-          >
-            <p className="text-muted-foreground text-sm">
-              Proficiency levels vary across different technologies. 
-              <span className="text-primary font-medium"> Always learning and growing!</span>
-            </p>
-          </motion.div>
-        </motion.div>
+          <div className="mt-14 space-y-14 lg:mt-2">
+            {grouped.map(({ tier, items }) => {
+              if (!items.length) return null;
+              const deEmp = tier === "also";
+              return (
+                <motion.div
+                  key={tier}
+                  variants={stagger}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={viewportOnce}
+                >
+                  <p
+                    className={`mb-6 text-[11px] font-medium uppercase tracking-[0.2em] ${
+                      deEmp ? "text-muted-foreground/70" : "text-muted-foreground"
+                    }`}
+                  >
+                    {tierLabel[tier]}
+                  </p>
+                  <div
+                    className={`grid gap-10 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-12 ${
+                      deEmp ? "border-t border-border/70 pt-8 opacity-90" : ""
+                    }`}
+                  >
+                    {items.map(([category, data], index) => (
+                      <motion.div key={category} variants={fade}>
+                        <div className="flex items-baseline gap-4">
+                          <span
+                            className={`font-heading tracking-tight text-muted-foreground ${
+                              deEmp ? "text-xl" : "text-3xl font-bold sm:text-4xl"
+                            }`}
+                          >
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <h3
+                            className={`font-heading tracking-tight ${
+                              deEmp
+                                ? "text-base font-medium text-foreground/70"
+                                : "text-xl font-semibold text-foreground sm:text-2xl"
+                            }`}
+                          >
+                            {category}
+                          </h3>
+                        </div>
+                        <div className="mt-5 flex flex-wrap gap-x-4 gap-y-3">
+                          {data.items.map((skill) => (
+                            <span
+                              key={skill}
+                              className={
+                                deEmp
+                                  ? "hairline-chip-muted text-xs"
+                                  : "hairline-chip text-sm"
+                              }
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );

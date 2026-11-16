@@ -1,28 +1,38 @@
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
+import ProjectsIndex from "./pages/ProjectsIndex";
+import CaseStudyPage from "./pages/CaseStudyPage";
+import CaseStudyByRoute from "./pages/CaseStudyByRoute";
+import Recognition from "./pages/Recognition";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ThemeProvider>
+    <Toaster />
+    <BrowserRouter>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/projects" element={<ProjectsIndex />} />
+        <Route path="/projects/:slug" element={<CaseStudyPage />} />
+        <Route path="/research/seq-donut" element={<CaseStudyByRoute />} />
+        <Route path="/experience/ireg-it" element={<CaseStudyByRoute />} />
+        <Route path="/recognition" element={<Recognition />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  </ThemeProvider>
 );
 
 export default App;

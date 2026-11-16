@@ -1,73 +1,80 @@
-# Welcome to your Lovable project
 
-## Project info
+# Hammad Tahir Portfolio
 
-**URL**: https://lovable.dev/projects/e1d248dc-a72e-4e9f-8834-335a29b081e3
+This is a personal portfolio web application built with React, TypeScript, Vite, Tailwind CSS, and shadcn-ui.
 
-## How can I edit this code?
+## Getting Started
 
-There are several ways of editing your application.
+### Prerequisites
 
-**Use Lovable**
+- Node.js (v18 or newer recommended)
+- npm (comes with Node.js)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e1d248dc-a72e-4e9f-8834-335a29b081e3) and start prompting.
+### Installation
 
-Changes made via Lovable will be committed automatically to this repo.
+From the repository directory, install dependencies:
 
-**Use your preferred IDE**
+```bash
+npm install
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Running the Development Server
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Open your browser and visit the local address shown in the terminal (usually http://localhost:5173).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Building for Production
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Preview Production Build
 
-## What technologies are used for this project?
+```bash
+npm run preview
+```
 
-This project is built with:
+## Technologies Used
 
-- Vite
-- TypeScript
 - React
-- shadcn-ui
+- TypeScript
+- Vite
 - Tailwind CSS
+- shadcn-ui
 
-## How can I deploy this project?
+## Project Structure
 
-Simply open [Lovable](https://lovable.dev/projects/e1d248dc-a72e-4e9f-8834-335a29b081e3) and click on Share -> Publish.
+- `src/` — Main source code (components, pages, config, hooks, etc.)
+- `public/` — Static assets (images, favicon, resume PDF)
+- `package.json` — Project dependencies and scripts
 
-## Can I connect a custom domain to my Lovable project?
+## Content
 
-Yes, you can!
+- Contact details and CV links: `src/config/site.ts`
+- Positioning, skills, and experience: `src/config/content.ts`
+- Project evidence and ownership: `src/config/projects.ts`
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Deployment
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This is a static Vite app. The Git repository root is this folder. Point the
+host at this directory, not the parent `Final-portfolio` folder.
+
+- **Vercel:** framework preset Vite. `vercel.json` rewrites client routes
+  (`/projects`, `/recognition`, case studies) to `index.html`.
+- **Netlify:** `public/_redirects` does the same. Publish the `dist` directory.
+- **Other static hosts:** `npm run build` also writes `dist/404.html` so unknown
+  paths fall back to the app.
+
+Build command: `npm run build`. Output: `dist`.
+
+The canonical and social URLs are `https://hammad-portfolio.vercel.app`. If the
+production domain is different, update `src/config/site.ts`, `index.html`,
+`public/robots.txt`, and `public/sitemap.xml` together.
+
+## License
+
+MIT

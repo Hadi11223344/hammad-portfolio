@@ -1,158 +1,124 @@
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, Heart } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/config/site";
+import { scrollToId, useMotionVariants, viewportOnce } from "@/lib/motion";
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
-  
-  const footerLinks = [
-    { name: "Home", href: "#hero" },
-    { name: "About", href: "#about" },
-    { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
-  ];
+  const year = new Date().getFullYear();
+  const { fade } = useMotionVariants();
+  const navigate = useNavigate();
 
-  const socialLinks = [
-    {
-      name: "LinkedIn",
-      href: "https://www.linkedin.com/in/hammad-tahir1",
-      icon: Linkedin
-    },
-    {
-      name: "GitHub", 
-      href: "https://github.com/your-github",
-      icon: Github
-    },
-    {
-      name: "Email",
-      href: "mailto:XXX@protonmail.com",
-      icon: Mail
+  const handleNav = (href: string, type: "route" | "hash") => {
+    if (type === "hash") {
+      if (window.location.pathname === "/") {
+        scrollToId(href.replace("/#", "").replace("#", ""));
+      } else {
+        navigate(href);
+      }
+      return;
     }
-  ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.getElementById(href.slice(1));
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    navigate(href);
   };
 
-  return (
-    <footer className="bg-card border-t border-border/50">
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-4 gap-8">
-          {/* Brand Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="md:col-span-2"
-          >
-            <div className="space-y-4">
-              <h3 className="font-heading font-bold text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Alex Alex
-              </h3>
-              <p className="text-muted-foreground max-w-md">
-                Backend & AI Engineer specializing in Java Spring Boot, Python FastAPI/Django, 
-                and practical AI solutions. Building the future, one API at a time.
-              </p>
-              
-              {/* Social Links */}
-              <div className="flex gap-4">
-                {socialLinks.map((link) => {
-                  const IconComponent = link.icon;
-                  
-                  return (
-                    <Button
-                      key={link.name}
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="hover:text-primary transition-colors"
-                    >
-                      <a href={link.href} target="_blank" rel="noopener noreferrer">
-                        <IconComponent className="w-5 h-5" />
-                        <span className="sr-only">{link.name}</span>
-                      </a>
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-          </motion.div>
+  const social = [
+    { name: "LinkedIn", href: siteConfig.social.linkedin, icon: Linkedin },
+    { name: "GitHub", href: siteConfig.social.github, icon: Github },
+    { name: "Email", href: siteConfig.social.email, icon: Mail },
+  ];
 
-          {/* Quick Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <h4 className="font-heading font-semibold text-lg mb-4">Quick Links</h4>
-            <ul className="space-y-3">
-              {footerLinks.map((link) => (
+  return (
+    <footer className="bg-primary text-primary-foreground">
+      <motion.div
+        variants={fade}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportOnce}
+        className="mx-auto max-w-7xl border-t border-primary-foreground/15 px-6 py-16 sm:px-10 sm:py-20"
+      >
+        <div className="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr] md:gap-16">
+          <div>
+            <h3 className="font-heading text-4xl font-bold tracking-tight sm:text-5xl">
+              {siteConfig.name}
+            </h3>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/80">
+              Backend & Applied AI Engineer — I build the backend systems that make AI useful.
+              Open to ASE / Backend roles in Lahore.
+            </p>
+            <div className="mt-6 flex gap-1">
+              {social.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Button
+                    key={link.name}
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                  >
+                    <a
+                      href={link.href}
+                      {...(link.href.startsWith("http")
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span className="sr-only">{link.name}</span>
+                    </a>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-xs font-medium uppercase tracking-[0.2em] text-primary-foreground/65">
+              Navigate
+            </h4>
+            <ul className="mt-5 space-y-3">
+              {siteConfig.nav.map((link) => (
                 <li key={link.href}>
                   <button
-                    onClick={() => scrollToSection(link.href)}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    type="button"
+                    onClick={() => handleNav(link.href, link.type)}
+                    className="link-underline text-sm text-primary-foreground/80 transition-colors hover:text-primary-foreground"
                   >
                     {link.name}
                   </button>
                 </li>
               ))}
-              <li>
-                <a
-                  href="/Alex_Alex_CV.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                >
-                  Download CV
-                </a>
-              </li>
             </ul>
-          </motion.div>
-
-          {/* Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h4 className="font-heading font-semibold text-lg mb-4">Contact</h4>
-            <div className="space-y-3 text-sm">
-              <p className="text-muted-foreground">
-                <span className="text-foreground">Email:</span><br />
-                XXX@protonmail.com
-              </p>
-              <p className="text-muted-foreground">
-                <span className="text-foreground">Phone:</span><br />
-                0333333333
-              </p>
-              <p className="text-muted-foreground">
-                <span className="text-foreground">Location:</span><br />
-                Pakistan
-              </p>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Bottom Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-12 pt-8 border-t border-border/50"
-        >
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-muted-foreground text-sm">
-              © {currentYear} Alex Alex. All rights reserved.
-            </p>
-            
-            <p className="text-muted-foreground text-sm flex items-center gap-1">
-              Made with <Heart className="w-4 h-4 text-red-500" /> using React & Tailwind CSS
-            </p>
           </div>
-        </motion.div>
+
+          <div>
+            <h4 className="text-xs font-medium uppercase tracking-[0.2em] text-primary-foreground/65">
+              Contact
+            </h4>
+            <div className="mt-5 space-y-3 text-sm text-primary-foreground/80">
+              <p>{siteConfig.contact.email}</p>
+              <p>{siteConfig.contact.phone}</p>
+              <p>{siteConfig.contact.location}</p>
+              <a
+                href={siteConfig.resume.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-underline inline-block pt-1 text-primary-foreground"
+              >
+                Download CV
+              </a>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="border-t border-primary-foreground/15">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-6 py-5 text-xs text-primary-foreground/65 sm:flex-row sm:items-center sm:justify-between sm:px-10">
+          <p>
+            © {year} {siteConfig.name}
+          </p>
+          <p>Built with React · FastAPI-focused portfolio</p>
+        </div>
       </div>
     </footer>
   );

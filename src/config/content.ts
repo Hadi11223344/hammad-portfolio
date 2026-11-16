@@ -1,114 +1,143 @@
 export const personalInfo = {
-  name: "Alex Alex",
-  title: "Backend & AI Engineer",
-  tagline: "Java Spring Boot • Python FastAPI/Django • Agentic AI",
-  bio: "I'm a backend-leaning full-stack engineer focused on practical AI. I've built Java Spring Boot and Python FastAPI/Django services, real-time features with Firebase, payment integrations, chat systems, and API-driven apps. I'm currently building an AI-powered fashion recommendation system (Flutter + Django) using embeddings and clustering, and I'm exploring agentic AI for a centralized productivity tool that connects to docs, email, and more.",
-  
-  badges: [
-    "Available for Internships",
-    "Open to Remote", 
-    "Based in Pakistan"
-  ],
-  
+  name: "Hammad Tahir",
+  title: "Backend & Applied AI Engineer",
+  tagline: "I build the backend systems that make AI useful",
+  bio: "CS graduate from UMT (3.76 CGPA, Rector’s Merit Award). I build FastAPI backends and ship applied AI product features — voice agents, healthcare chat safety/RAG (engineering controls, not medical-grade), and recruiting screening pipelines. Looking for ASE / Backend / Applied AI roles in Lahore.",
+
+  badges: ["Open to ASE / Backend roles", "Lahore, Pakistan", "FastAPI · Applied AI"],
+
   highlights: [
-    "1+ year building REST APIs, integrations, and real-time features.",
-    "Comfortable with Java (Spring Boot), Python (FastAPI/Django), and Flutter for app UIs.",
-    "Worked with Google Maps, Firebase Realtime DB, Stripe/PayPal, and WebSockets.",
-    "Exploring agentic AI, RAG, and human-in-the-loop workflows."
+    "6-month paid internship at IREG-IT (backend services, CI/CD, Linux VPS).",
+    "Delivered paid client work: SmartCare (healthcare chat safety/RAG) and HireBeam (AI recruiting).",
+    "FYP: VOIA — FastAPI voice-agent platform with workflows, RAG, and telephony (team lead / backend lead).",
+    "Comfortable explaining backend design end-to-end: auth, data models, APIs, Docker.",
   ],
-  
+
   focusAreas: [
     {
-      title: "Backend APIs",
-      description: "RESTful services, microservices architecture, and real-time features with WebSockets",
-      icon: "Server"
+      title: "Backend",
+      description:
+        "FastAPI services, async SQLAlchemy, PostgreSQL, Redis, JWT/OAuth, WebSockets, and Dockerized deploys.",
+      icon: "Server",
     },
     {
-      title: "AI/RAG/Agentic",
-      description: "Machine learning pipelines, embedding systems, and intelligent automation workflows",
-      icon: "Brain"
+      title: "Applied AI",
+      description:
+        "RAG, embeddings, prompt/safety layers, multi-LLM APIs, and agent-style workflows inside real products.",
+      icon: "Brain",
     },
     {
-      title: "Mobile/Flutter Integration",
-      description: "Cross-platform mobile apps with robust backend integrations and real-time sync",
-      icon: "Smartphone"
-    }
-  ]
+      title: "ML / DL",
+      description:
+        "Transfer learning, NER fine-tuning, CV feature extractors, and research experiments when the product needs them.",
+      icon: "Cpu",
+    },
+  ],
 };
 
 export const skills = {
-  "Backend": {
-    items: ["Java", "Spring Boot", "Python", "FastAPI", "Django", "Node.js", "REST APIs", "GraphQL", "Microservices", "WebSockets"],
-    color: "emerald"
+  Backend: {
+    tier: "core" as const,
+    items: [
+      "Python",
+      "FastAPI",
+      "SQLAlchemy",
+      "Pydantic",
+      "REST APIs",
+      "WebSockets",
+      "Alembic",
+      "Celery",
+      "Java",
+      "Spring Boot",
+    ],
+    color: "emerald",
   },
-  "AI/ML": {
-    items: ["TensorFlow", "PyTorch", "scikit-learn", "Pandas", "NumPy", "OpenAI API", "Embeddings", "RAG", "Clustering", "Neural Networks"],
-    color: "sky"
+  Data: {
+    tier: "core" as const,
+    items: ["PostgreSQL", "Redis", "SQLite", "SQL", "pgvector"],
+    color: "violet",
   },
-  "Databases": {
-    items: ["PostgreSQL", "MySQL", "Redis", "MongoDB", "Firebase", "Supabase"],
-    color: "violet"
+  "Applied AI": {
+    tier: "core" as const,
+    items: [
+      "LLM APIs",
+      "RAG",
+      "Embeddings",
+      "Prompt engineering",
+      "Safety layers",
+      "LangGraph",
+      "sentence-transformers",
+    ],
+    color: "sky",
   },
-  "DevOps": {
-    items: ["Docker", "AWS", "GCP", "Vercel", "CI/CD", "Linux", "Nginx", "Git"],
-    color: "orange"
+  ML: {
+    tier: "applied" as const,
+    items: ["Scikit-learn", "Feature pipelines", "Evaluation", "NER fine-tuning"],
+    color: "sky",
   },
-  "Frontend": {
-    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML5", "CSS3"],
-    color: "blue"
+  DL: {
+    tier: "applied" as const,
+    items: ["PyTorch", "Hugging Face", "Transformers", "BART", "Bi-LSTM"],
+    color: "violet",
   },
-  "Mobile": {
-    items: ["Flutter", "Dart", "Firebase", "SQLite", "Provider", "Riverpod"],
-    color: "pink"
+  CV: {
+    tier: "applied" as const,
+    items: ["OpenCV", "ResNet50", "TensorFlow/Keras", "Image preprocessing"],
+    color: "orange",
   },
-  "Tools": {
-    items: ["VS Code", "IntelliJ IDEA", "Postman", "Figma", "Jira", "Slack", "GitHub"],
-    color: "gray"
-  }
+  Frontend: {
+    tier: "also" as const,
+    items: ["Next.js", "TypeScript", "React", "Flutter", "Django templates"],
+    color: "blue",
+  },
+  DevOps: {
+    tier: "core" as const,
+    items: ["Docker", "Docker Compose", "Linux", "Nginx", "Git", "GitHub Actions", "CI/CD"],
+    color: "orange",
+  },
 };
 
 export const timeline = [
   {
-    year: "2024",
-    title: "AI Fashion Recommender (FYP)",
-    type: "Project",
-    description: "Built StyleSense using Flutter, Django, and machine learning for personalized fashion recommendations.",
-    icon: "Sparkles"
-  },
-  {
-    year: "2023",
-    title: "Backend Development Focus",
-    type: "Experience", 
-    description: "Specialized in Java Spring Boot and Python FastAPI for building scalable REST APIs and microservices.",
-    icon: "Code"
-  },
-  {
-    year: "2022",
-    title: "Started Software Engineering",
+    year: "2026",
+    title: "BS Computer Science — UMT",
     type: "Education",
-    description: "Began Computer Science studies focusing on backend development and AI technologies.",
-    icon: "GraduationCap"
+    description:
+      "Graduated with 3.76 CGPA. Rector’s Merit Award (Fall 2024, 4.00 semester). Capstone: VOIA voice AI platform (FastAPI).",
+    icon: "GraduationCap",
+  },
+  {
+    year: "2025–2026",
+    title: "Paid projects — SmartCare & HireBeam",
+    type: "Experience",
+    description:
+      "Built FastAPI backends with LLM features: healthcare chat safety/RAG (SmartCare — not medical-grade) and resume screening with embeddings/NER (HireBeam).",
+    icon: "Briefcase",
+  },
+  {
+    year: "2024–2025",
+    title: "Java Intern — IREG-IT",
+    type: "Experience",
+    description:
+      "Six-month paid internship. Worked on a Spring Boot tax-document service, multi-language support, Linux VPS hardening, and CI/CD.",
+    icon: "Code",
   },
   {
     year: "2022",
-    title: "First Full-Stack Project",
-    type: "Project", 
-    description: "Developed grocery store management system with inventory tracking and billing features.",
-    icon: "Rocket"
-  }
+    title: "Started BS Computer Science",
+    type: "Education",
+    description: "University of Management and Technology, Lahore.",
+    icon: "Rocket",
+  },
 ];
 
 export const techStack = [
-  { name: "Java", icon: "Coffee" },
-  { name: "Spring Boot", icon: "Leaf" }, 
   { name: "Python", icon: "Snake" },
   { name: "FastAPI", icon: "Zap" },
-  { name: "Django", icon: "Server" },
   { name: "PostgreSQL", icon: "Database" },
   { name: "Redis", icon: "Layers" },
   { name: "Docker", icon: "Container" },
-  { name: "Firebase", icon: "Flame" },
-  { name: "Flutter", icon: "Smartphone" },
-  { name: "TensorFlow", icon: "Brain" },
-  { name: "scikit-learn", icon: "Bot" }
+  { name: "LLM APIs", icon: "Brain" },
+  { name: "RAG", icon: "Bot" },
+  { name: "SQLAlchemy", icon: "Server" },
 ];

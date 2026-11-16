@@ -1,129 +1,210 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Download, Menu, X, Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Download, Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/components/ThemeProvider";
+import { siteConfig } from "@/config/site";
+import { scrollToId, usePrefersReducedMotion } from "@/lib/motion";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const navItems = [
-    { name: "Home", href: "#hero" },
-    { name: "About", href: "#about" },
-    { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
-  ];
+  const [contactInView, setContactInView] = useState(false);
+  const reduced = usePrefersReducedMotion();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setIsScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const element = document.getElementById(href.slice(1));
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      setContactInView(false);
+      return;
+    }
+    const el = document.getElementById("contact");
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setContactInView(Boolean(entry?.isIntersecting)),
+      { rootMargin: "-35% 0px -40% 0px", threshold: [0, 0.2, 0.5] }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      requestAnimationFrame(() => scrollToId(id));
+    }
+  }, [location.pathname, location.hash]);
+
+  const goHome = () => {
+    if (location.pathname === "/") {
+      scrollToId("hero");
+    } else {
+      navigate("/");
     }
     setIsMobileMenuOpen(false);
   };
 
+  const handleNav = (href: string, type: "route" | "hash") => {
+    setIsMobileMenuOpen(false);
+    if (type === "hash") {
+      if (location.pathname === "/") {
+        scrollToId(href.replace("/#", "").replace("#", ""));
+      } else {
+        navigate(href);
+      }
+      return;
+    }
+    navigate(href);
+  };
+
+  const isActive = (href: string, type: "route" | "hash") => {
+    if (type === "hash") {
+      const hash = href.includes("#") ? `#${href.split("#").pop()}` : "";
+      return (
+        location.pathname === "/" &&
+        (location.hash === hash || (hash === "#contact" && contactInView))
+      );
+    }
+    if (href === "/") return location.pathname === "/" && !contactInView;
+    return location.pathname === href || location.pathname.startsWith(`${href}/`);
+  };
+
   return (
     <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? "backdrop-blur-md bg-background/80 border-b border-border shadow-sm" 
-          : "bg-transparent"
+      initial={reduced ? false : { y: -40, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: reduced ? 0 : 0.45 }}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "glass !border-x-0 !border-t-0 border-b border-border/80"
+          : "bg-gradient-to-b from-background/75 via-background/25 to-transparent"
       }`}
     >
-      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="font-heading font-bold text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 sm:px-10">
+        <button
+          type="button"
+          onClick={goHome}
+          className="link-underline font-heading text-lg font-bold tracking-tight text-foreground"
         >
-          Alex Alex
-        </motion.div>
+          {siteConfig.name}
+        </button>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
-          {navItems.map((item, index) => (
-            <motion.button
+        <div className="hidden items-center gap-7 lg:flex">
+          {siteConfig.nav.slice(1).map((item) => (
+            <button
               key={item.href}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + index * 0.05 }}
-              onClick={() => scrollToSection(item.href)}
-              className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground"
+              type="button"
+              onClick={() => handleNav(item.href, item.type)}
+              data-active={isActive(item.href, item.type) ? "true" : "false"}
+              className={`link-underline text-sm tracking-tight transition-colors ${
+                isActive(item.href, item.type)
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
               {item.name}
-            </motion.button>
+            </button>
           ))}
         </div>
 
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center space-x-4">
-          <Button variant="outline" size="sm" asChild>
-            <a href="/Alex_Alex_CV.pdf" target="_blank" rel="noopener noreferrer">
-              <Download className="w-4 h-4 mr-2" />
-              Download CV
+        <div className="flex items-center gap-1">
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            asChild
+            className={`mr-1 hidden rounded-md transition-colors md:inline-flex ${
+              isScrolled
+                ? "border-border/70 bg-transparent hover:border-primary/50"
+                : "glass-soft border-foreground/20 hover:border-foreground/40"
+            }`}
+          >
+            <a href={siteConfig.resume.url} target="_blank" rel="noopener noreferrer">
+              <Download className="mr-2 h-3.5 w-3.5" />
+              CV
             </a>
           </Button>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
+          <div className="md:hidden">
+            <ThemeToggle />
+          </div>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="w-9 px-0"
+            type="button"
+            className="px-2 lg:hidden"
+            aria-expanded={isMobileMenuOpen}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setIsMobileMenuOpen((v) => !v)}
           >
-            {isMobileMenuOpen ? (
-              <X className="h-4 w-4" />
-            ) : (
-              <Menu className="h-4 w-4" />
-            )}
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="md:hidden backdrop-blur-md bg-background/90 border-b border-border"
-        >
-          <div className="container mx-auto px-4 py-4 space-y-4">
-            {navItems.map((item) => (
-              <button
-                key={item.href}
-                onClick={() => scrollToSection(item.href)}
-                className="block w-full text-left py-2 text-sm font-medium transition-colors hover:text-primary text-muted-foreground"
-              >
-                {item.name}
-              </button>
-            ))}
-            <Button variant="outline" size="sm" asChild className="w-full mt-4">
-              <a href="/Alex_Alex_CV.pdf" target="_blank" rel="noopener noreferrer">
-                <Download className="w-4 h-4 mr-2" />
-                Download CV
-              </a>
-            </Button>
-          </div>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+            className="glass fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col border-t border-border/70 lg:hidden"
+          >
+            <div className="flex flex-1 flex-col gap-1 overflow-y-auto px-6 py-8">
+              {siteConfig.nav.map((item) => (
+                <button
+                  key={item.href}
+                  type="button"
+                  onClick={() => handleNav(item.href, item.type)}
+                  className={`rounded-md px-2 py-4 text-left font-heading text-2xl font-semibold tracking-tight transition-colors ${
+                    isActive(item.href, item.type)
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
+            <div className="border-t border-border px-6 py-5">
+              <Button size="lg" asChild className="w-full rounded-md">
+                <a href={siteConfig.resume.url} target="_blank" rel="noopener noreferrer">
+                  <Download className="mr-2 h-4 w-4" />
+                  Download CV
+                </a>
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }
